@@ -5,6 +5,7 @@ app:
   database-port: 5432
   database-name: product_service
   server-port: 8081
+  #  server-port: 0
   application-name: product-service
   kafka-hostname: localhost
   kafka-port: 9092

@@ -1,13 +1,19 @@
 package com.example.productservice.service;
 
-import com.example.productservice.dto.ProductRequest;
-import com.example.productservice.dto.ProductResponse;
-
-import java.util.List;
+import com.example.productservice.dto.CreateProductRequest;
+import com.example.productservice.dto.ProductDto;
+import com.example.springbootmicroservicesframework.pagination.AppPageRequest;
+import com.example.springbootmicroservicesframework.pagination.MultiSortPageRequest;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Sort;
 
 public interface ProductService {
 
-    void create(ProductRequest productRequest);
+    void create(CreateProductRequest request);
 
-    List<ProductResponse> getProducts();
+    PageImpl<ProductDto> findAll(Integer page, Integer size, Sort sort);
+
+    PageImpl<ProductDto> findAllSortMultiColumn(MultiSortPageRequest request);
+
+    PageImpl<ProductDto> findAll(AppPageRequest request);
 }

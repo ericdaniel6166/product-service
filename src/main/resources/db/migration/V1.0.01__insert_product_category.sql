@@ -2,16 +2,26 @@ BEGIN;
 
 
 INSERT INTO category (name, created_by, created_date, last_modified_by, last_modified_date)
-VALUES ('Electronics', 'product-service-v1.0', NOW(), 'product-service-v1.0', NOW()),
-       ('Clothing', 'product-service-v1.0', NOW(), 'product-service-v1.0', NOW()),
-       ('Home & Garden', 'product-service-v1.0', NOW(), 'product-service-v1.0', NOW()),
-       ('Toys & Games', 'product-service-v1.0', NOW(), 'product-service-v1.0', NOW()),
-       ('Sports & Outdoors', 'product-service-v1.0', NOW(), 'product-service-v1.0', NOW()),
-       ('Books', 'product-service-v1.0', NOW(), 'product-service-v1.0', NOW()),
-       ('Furniture', 'product-service-v1.0', NOW(), 'product-service-v1.0', NOW()),
-       ('Jewelry', 'product-service-v1.0', NOW(), 'product-service-v1.0', NOW()),
-       ('Health & Beauty', 'product-service-v1.0', NOW(), 'product-service-v1.0', NOW()),
-       ('Food', 'product-service-v1.0', NOW(), 'product-service-v1.0', NOW());
+VALUES ('Electronics', 'product-service-v1.0', NOW() - interval '8 year' + random() * interval '1 year',
+        'product-service-v1.0', NOW() - interval '6 year' + random() * interval '1 year'),
+       ('Clothing', 'product-service-v1.0', NOW() - interval '8 year' + random() * interval '1 year',
+        'product-service-v1.0', NOW() - interval '6 year' + random() * interval '1 year'),
+       ('Home & Garden', 'product-service-v1.0', NOW() - interval '8 year' + random() * interval '1 year',
+        'product-service-v1.0', NOW() - interval '6 year' + random() * interval '1 year'),
+       ('Toys & Games', 'product-service-v1.0', NOW() - interval '8 year' + random() * interval '1 year',
+        'product-service-v1.0', NOW() - interval '6 year' + random() * interval '1 year'),
+       ('Sports & Outdoors', 'product-service-v1.0', NOW() - interval '8 year' + random() * interval '1 year',
+        'product-service-v1.0', NOW() - interval '6 year' + random() * interval '1 year'),
+       ('Books', 'product-service-v1.0', NOW() - interval '8 year' + random() * interval '1 year',
+        'product-service-v1.0', NOW() - interval '6 year' + random() * interval '1 year'),
+       ('Furniture', 'product-service-v1.0', NOW() - interval '8 year' + random() * interval '1 year',
+        'product-service-v1.0', NOW() - interval '6 year' + random() * interval '1 year'),
+       ('Jewelry', 'product-service-v1.0', NOW() - interval '8 year' + random() * interval '1 year',
+        'product-service-v1.0', NOW() - interval '6 year' + random() * interval '1 year'),
+       ('Health & Beauty', 'product-service-v1.0', NOW() - interval '8 year' + random() * interval '1 year',
+        'product-service-v1.0', NOW() - interval '6 year' + random() * interval '1 year'),
+       ('Food', 'product-service-v1.0', NOW() - interval '8 year' + random() * interval '1 year',
+        'product-service-v1.0', NOW() - interval '6 year' + random() * interval '1 year');
 
 
 CREATE TEMP TABLE if not exists category_assignments AS
@@ -48,9 +58,9 @@ SELECT ca.product_name,
        'Description for ' || ca.product_name,
        (random() * 1000)::numeric(19, 4),
        'product-service-v1.0',
-       NOW(),
+       NOW() - interval '4 year' + random() * interval '1 year',
        'product-service-v1.0',
-       NOW()
+       NOW() - interval '2 year' + random() * interval '1 year'
 FROM category_assignments ca;
 
 
@@ -58,9 +68,9 @@ INSERT INTO product_category (product_id, category_id, created_by, created_date,
 SELECT ca.product_id,
        ca.category_id,
        'product-service-v1.0',
-       NOW(),
+       NOW() - interval '8 year' + random() * interval '1 year',
        'product-service-v1.0',
-       NOW()
+       NOW() - interval '6 year' + random() * interval '1 year'
 FROM category_assignments ca;
 
 

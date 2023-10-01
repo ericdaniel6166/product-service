@@ -1,14 +1,18 @@
 package com.example.productservice.api;
 
 import com.example.productservice.dto.CreateProductRequest;
+import com.example.productservice.dto.CursorProductDto;
 import com.example.productservice.dto.ProductDto;
 import com.example.productservice.service.ProductService;
 import com.example.springbootmicroservicesframework.pagination.AppPageRequest;
+import com.example.springbootmicroservicesframework.pagination.CursorPageRequest;
+import com.example.springbootmicroservicesframework.pagination.CursorPageResponse;
 import com.example.springbootmicroservicesframework.pagination.MultiSortPageRequest;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,7 +35,9 @@ public class ProductApi {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void createProduct(@RequestBody CreateProductRequest request) {
+    public void create(@RequestBody @Valid CreateProductRequest request) {
+        System.out.println(request.toString()); //delete
+        log.info("findAll"); //delete
         productService.create(request);
     }
 
@@ -58,5 +64,16 @@ public class ProductApi {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/cursor-pagination")
+    public ResponseEntity<CursorPageResponse<CursorProductDto>> findAllCursorPagination(@Valid CursorPageRequest request) throws IllegalAccessException {
+        System.out.println(request.toString()); //delete
+        log.info("findAllCursorPagination"); //delete
+
+        CursorPageResponse<CursorProductDto> response = productService.findAllCursorPagination(request);
+        if (CollectionUtils.isEmpty(response.getContent())) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(response);
+    }
 
 }

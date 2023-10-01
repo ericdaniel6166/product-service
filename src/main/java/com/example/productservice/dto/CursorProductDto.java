@@ -14,9 +14,13 @@ import java.math.BigDecimal;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProductDto extends BaseEntity<String> {
+public class CursorProductDto extends BaseEntity<String> {
+    private String cursorId;
+    //    @JsonIgnore //uncomment
     private Long id;
     private String name;
     private String description;
     private BigDecimal price;
+
+
 }

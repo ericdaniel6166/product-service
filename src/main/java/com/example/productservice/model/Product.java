@@ -17,8 +17,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import java.io.Serial;
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -29,9 +27,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
-public class Product extends BaseEntity<String> implements Serializable {
-    @Serial
-    private static final long serialVersionUID = 7041320943L;
+public class Product extends BaseEntity<String> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -1,12 +1,16 @@
 package com.example.productservice.service.impl;
 
+import com.example.productservice.dto.CreateMultiProductRequest;
 import com.example.productservice.dto.CreateProductRequest;
 import com.example.productservice.dto.CursorProductDto;
 import com.example.productservice.dto.ProductDto;
+import com.example.productservice.dto.UpdateProductRequest;
 import com.example.productservice.mapper.ProductMapper;
 import com.example.productservice.model.Product;
 import com.example.productservice.repository.ProductRepository;
 import com.example.productservice.service.ProductService;
+import com.example.springbootmicroservicesframework.dto.IdListResponse;
+import com.example.springbootmicroservicesframework.exception.NotFoundException;
 import com.example.springbootmicroservicesframework.pagination.AppPageRequest;
 import com.example.springbootmicroservicesframework.pagination.AppSortOrder;
 import com.example.springbootmicroservicesframework.pagination.CursorPageRequest;
@@ -29,6 +33,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,22 +44,46 @@ import java.util.stream.Collectors;
 public class ProductServiceImpl implements ProductService {
 
     final ProductRepository productRepository;
-
     final ModelMapper modelMapper;
-
     final ProductMapper productMapper;
+
+    @Override
+    public ProductDto getById(Long id) throws NotFoundException {
+        Product product = findById(id);
+        return modelMapper.map(product, ProductDto.class);
+    }
+
+    public Product findById(Long id) throws NotFoundException {
+        return productRepository.findById(id).orElseThrow(() -> new NotFoundException(String.format("product id %s", id)));
+    }
 
     @Transactional
     @Override
-    public void create(CreateProductRequest request) {
-        Product product = Product.builder()
-                .name(request.getName())
-                .description(request.getDescription())
-                .price(request.getPrice())
-                .build();
+    public IdListResponse update(UpdateProductRequest request) throws NotFoundException {
+        Product product = findById(request.getId());
+        modelMapper.map(request, product);
+        productRepository.saveAndFlush(product);
+        return new IdListResponse(Collections.singletonList(product.getId()));
+    }
+
+    @Transactional
+    @Override
+    public IdListResponse saveAndFlush(CreateProductRequest request) {
+        Product product = modelMapper.map(request, Product.class);
 
         productRepository.saveAndFlush(product);
-        log.info("Product {} is saved", product.getId());
+        return new IdListResponse(Collections.singletonList(product.getId()));
+    }
+
+    @Transactional
+    @Override
+    public IdListResponse saveAllAndFlush(CreateMultiProductRequest request) {
+        List<Product> productList = request.getProductList().stream()
+                .map(createProductRequest -> modelMapper.map(createProductRequest, Product.class)).toList();
+
+        productRepository.saveAllAndFlush(productList);
+        List<Long> idList = productList.stream().map(Product::getId).toList();
+        return new IdListResponse(idList);
     }
 
     @Override
@@ -78,10 +107,14 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public PageImpl<ProductDto> findAll(AppPageRequest request) {
+        Sort.Direction direction = Sort.Direction.fromString(request.getSortDirection());
+        List<Sort.Order> orders = request.getSortColumn().stream()
+                .map(property -> new Sort.Order(direction, property))
+                .collect(Collectors.toList());
+        PageUtils.addDefaultOrder(orders);
         return findAll(request.getPageNumber(),
                 request.getPageSize(),
-                Sort.by(Sort.Direction.fromString(request.getSortDirection()),
-                        request.getSortColumn()));
+                Sort.by(orders));
     }
 
     @Override

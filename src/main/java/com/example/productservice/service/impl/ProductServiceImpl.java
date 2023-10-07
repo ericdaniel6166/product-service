@@ -9,15 +9,15 @@ import com.example.productservice.mapper.ProductMapper;
 import com.example.productservice.model.Product;
 import com.example.productservice.repository.ProductRepository;
 import com.example.productservice.service.ProductService;
+import com.example.springbootmicroservicesframework.config.pagination.AppPageRequest;
+import com.example.springbootmicroservicesframework.config.pagination.AppSortOrder;
+import com.example.springbootmicroservicesframework.config.pagination.CursorPageRequest;
+import com.example.springbootmicroservicesframework.config.pagination.CursorPageResponse;
+import com.example.springbootmicroservicesframework.config.pagination.MultiSortPageRequest;
+import com.example.springbootmicroservicesframework.config.pagination.PageSpecification;
+import com.example.springbootmicroservicesframework.config.pagination.PageUtils;
 import com.example.springbootmicroservicesframework.dto.IdListResponse;
 import com.example.springbootmicroservicesframework.exception.NotFoundException;
-import com.example.springbootmicroservicesframework.pagination.AppPageRequest;
-import com.example.springbootmicroservicesframework.pagination.AppSortOrder;
-import com.example.springbootmicroservicesframework.pagination.CursorPageRequest;
-import com.example.springbootmicroservicesframework.pagination.CursorPageResponse;
-import com.example.springbootmicroservicesframework.pagination.MultiSortPageRequest;
-import com.example.springbootmicroservicesframework.pagination.PageSpecification;
-import com.example.springbootmicroservicesframework.pagination.PageUtils;
 import com.example.springbootmicroservicesframework.utils.AppReflectionUtils;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -47,20 +47,31 @@ public class ProductServiceImpl implements ProductService {
     final ModelMapper modelMapper;
     final ProductMapper productMapper;
 
+    @Transactional
     @Override
-    public ProductDto getById(Long id) throws NotFoundException {
-        Product product = findById(id);
+    public void deleteById(Long id) throws NotFoundException {
+        boolean isExisted = productRepository.existsById(id);
+        if (isExisted) {
+            productRepository.deleteById(id);
+        } else {
+            throw new NotFoundException(String.format("product id %s", id));
+        }
+    }
+
+    @Override
+    public ProductDto findById(Long id) throws NotFoundException {
+        Product product = getById(id);
         return modelMapper.map(product, ProductDto.class);
     }
 
-    public Product findById(Long id) throws NotFoundException {
+    public Product getById(Long id) throws NotFoundException {
         return productRepository.findById(id).orElseThrow(() -> new NotFoundException(String.format("product id %s", id)));
     }
 
     @Transactional
     @Override
     public IdListResponse update(UpdateProductRequest request) throws NotFoundException {
-        Product product = findById(request.getId());
+        Product product = getById(request.getId());
         modelMapper.map(request, product);
         productRepository.saveAndFlush(product);
         return new IdListResponse(Collections.singletonList(product.getId()));
@@ -68,7 +79,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Transactional
     @Override
-    public IdListResponse saveAndFlush(CreateProductRequest request) {
+    public IdListResponse create(CreateProductRequest request) {
         Product product = modelMapper.map(request, Product.class);
 
         productRepository.saveAndFlush(product);
@@ -77,7 +88,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Transactional
     @Override
-    public IdListResponse saveAllAndFlush(CreateMultiProductRequest request) {
+    public IdListResponse createMulti(CreateMultiProductRequest request) {
         List<Product> productList = request.getProductList().stream()
                 .map(createProductRequest -> modelMapper.map(createProductRequest, Product.class)).toList();
 

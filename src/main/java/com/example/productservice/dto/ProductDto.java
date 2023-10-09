@@ -1,11 +1,13 @@
 package com.example.productservice.dto;
 
 import com.example.springbootmicroservicesframework.model.BaseEntity;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.experimental.FieldDefaults;
 
 import java.math.BigDecimal;
 
@@ -14,9 +16,10 @@ import java.math.BigDecimal;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class ProductDto extends BaseEntity<String> {
-    private Long id;
-    private String name;
-    private String description;
-    private BigDecimal price;
+    Long id;
+    String name;
+    String description;
+    BigDecimal price;
 }

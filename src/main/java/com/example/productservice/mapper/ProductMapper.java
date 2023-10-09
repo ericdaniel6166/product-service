@@ -2,7 +2,7 @@ package com.example.productservice.mapper;
 
 import com.example.productservice.dto.CursorProductDto;
 import com.example.productservice.model.Product;
-import com.example.springbootmicroservicesframework.config.pagination.PageUtils;
+import com.example.springbootmicroservicesframework.utils.PageUtils;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;

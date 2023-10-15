@@ -12,6 +12,7 @@ app:
   kafka-default-topic: notificationTopic
   kafka-concurrency: 3
   kafka-group-id: notificationId
+  context-path: api/product
 
 eureka:
   client:
@@ -71,6 +72,8 @@ management:
 
 server:
   port: ${app.server-port}
+  servlet:
+    context-path: /${app.context-path}
 
 logging:
   level:

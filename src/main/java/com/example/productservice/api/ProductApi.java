@@ -36,7 +36,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 @RestController
-@RequestMapping("/api/product")
+@RequestMapping("/")
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Slf4j

@@ -130,6 +130,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public CursorPageResponse<CursorProductDto> findAllCursorPagination(CursorPageRequest request) throws IllegalAccessException {
+        log.info("findAllCursorPagination");
         var specification = new PageSpecification<Product>(request);
         var productPage = productRepository.findAll(specification, Pageable.ofSize(request.getPageSize()));
         if (CollectionUtils.isEmpty(productPage.getContent())) {

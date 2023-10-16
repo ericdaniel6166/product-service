@@ -1,12 +1,12 @@
 package com.example.productservice.dto;
 
 import com.example.springbootmicroservicesframework.utils.Const;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
 
-import javax.validation.Valid;
-import javax.validation.constraints.Size;
 import java.util.List;
 
 @Data

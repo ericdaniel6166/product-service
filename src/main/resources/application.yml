@@ -13,6 +13,8 @@ app:
   kafka-concurrency: 3
   kafka-group-id: notificationId
   context-path: api/product
+  api-gateway-hostname: localhost
+  api-gateway-server-port: 8181
 
 eureka:
   client:
@@ -59,6 +61,12 @@ spring:
     show-sql: true
 
 management:
+  tracing:
+    enabled: true
+    propagation:
+      type: b3
+    sampling:
+      probability: 1.0
   health:
     circuitbreakers:
       enabled: true
@@ -78,3 +86,16 @@ server:
 logging:
   level:
     root: INFO
+  pattern:
+    level: "%5p[${spring.application.name:},%X{traceId:-},%X{spanId:-}]"
+
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+  api-docs:
+    path: /api-docs
+
+swagger:
+  server:
+    url: http://${app.api-gateway-hostname}:${app.api-gateway-server-port}/${app.context-path}

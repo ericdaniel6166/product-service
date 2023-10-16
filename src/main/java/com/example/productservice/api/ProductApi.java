@@ -13,6 +13,10 @@ import com.example.springbootmicroservicesframework.dto.IdListResponse;
 import com.example.springbootmicroservicesframework.dto.MultiSortPageRequest;
 import com.example.springbootmicroservicesframework.exception.NotFoundException;
 import com.example.springbootmicroservicesframework.utils.Const;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -30,13 +34,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
 
 @RestController
-@RequestMapping("/api/product")
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Slf4j
@@ -78,6 +77,7 @@ public class ProductApi {
 
     @GetMapping
     public ResponseEntity<PageImpl<ProductDto>> findAll(@Valid AppPageRequest request) {
+        log.info("findAll");
         PageImpl<ProductDto> response = productService.findAll(request);
         if (!response.hasContent()) {
             return ResponseEntity.noContent().build();
@@ -87,6 +87,7 @@ public class ProductApi {
 
     @PostMapping("/sort-multi-column")
     public ResponseEntity<PageImpl<ProductDto>> findAllSortMultiColumn(@RequestBody @Valid MultiSortPageRequest request) {
+        log.info("findAllSortMultiColumn");
         PageImpl<ProductDto> response = productService.findAllSortMultiColumn(request);
         if (!response.hasContent()) {
             return ResponseEntity.noContent().build();
@@ -97,6 +98,7 @@ public class ProductApi {
     @GetMapping("/cursor-pagination")
     public ResponseEntity<CursorPageResponse<CursorProductDto>> findAllCursorPagination(@Valid CursorPageRequest request)
             throws IllegalAccessException {
+        log.info("findAllCursorPagination");
         CursorPageResponse<CursorProductDto> response = productService.findAllCursorPagination(request);
         if (CollectionUtils.isEmpty(response.getContent())) {
             return ResponseEntity.noContent().build();

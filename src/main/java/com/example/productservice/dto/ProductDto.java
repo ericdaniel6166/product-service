@@ -22,4 +22,5 @@ public class ProductDto extends BaseEntity<String> {
     String name;
     String description;
     BigDecimal price;
+    Long categoryId;
 }

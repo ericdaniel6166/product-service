@@ -10,19 +10,16 @@ import com.example.springbootmicroservicesframework.dto.CursorPageRequest;
 import com.example.springbootmicroservicesframework.dto.CursorPageResponse;
 import com.example.springbootmicroservicesframework.dto.IdListResponse;
 import com.example.springbootmicroservicesframework.dto.MultiSortPageRequest;
+import com.example.springbootmicroservicesframework.dto.PageResponse;
 import com.example.springbootmicroservicesframework.exception.NotFoundException;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Sort;
 
 public interface ProductService {
 
     IdListResponse create(CreateProductRequest request);
 
-    PageImpl<ProductDto> findAll(Integer page, Integer size, Sort sort);
+    PageResponse<ProductDto> findAllSortMultiColumn(MultiSortPageRequest request);
 
-    PageImpl<ProductDto> findAllSortMultiColumn(MultiSortPageRequest request);
-
-    PageImpl<ProductDto> findAll(AppPageRequest request);
+    PageResponse<ProductDto> findAll(AppPageRequest request);
 
     CursorPageResponse<CursorProductDto> findAllCursorPagination(CursorPageRequest request) throws IllegalAccessException;
 

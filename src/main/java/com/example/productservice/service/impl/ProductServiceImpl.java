@@ -16,6 +16,7 @@ import com.example.springbootmicroservicesframework.dto.CursorPageRequest;
 import com.example.springbootmicroservicesframework.dto.CursorPageResponse;
 import com.example.springbootmicroservicesframework.dto.IdListResponse;
 import com.example.springbootmicroservicesframework.dto.MultiSortPageRequest;
+import com.example.springbootmicroservicesframework.dto.PageResponse;
 import com.example.springbootmicroservicesframework.exception.NotFoundException;
 import com.example.springbootmicroservicesframework.utils.AppReflectionUtils;
 import com.example.springbootmicroservicesframework.utils.PageUtils;
@@ -26,7 +27,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -97,16 +97,15 @@ public class ProductServiceImpl implements ProductService {
         return new IdListResponse(idList);
     }
 
-    @Override
-    public PageImpl<ProductDto> findAll(Integer pageNumber, Integer pageSize, Sort sort) {
+    private PageResponse<ProductDto> findAll(Integer pageNumber, Integer pageSize, Sort sort) {
         Pageable pageable = PageUtils.buildPageable(pageNumber, pageSize, sort);
-        Page<Product> result = productRepository.findAll(pageable);
-        List<ProductDto> productDtoList = result.stream().map(product -> modelMapper.map(product, ProductDto.class)).toList();
-        return PageUtils.buildAppPageImpl(pageNumber, pageSize, sort, result.getTotalElements(), productDtoList);
+        Page<Product> page = productRepository.findAll(pageable);
+        List<ProductDto> content = page.stream().map(product -> modelMapper.map(product, ProductDto.class)).toList();
+        return new PageResponse<>(content, page);
     }
 
     @Override
-    public PageImpl<ProductDto> findAllSortMultiColumn(MultiSortPageRequest request) {
+    public PageResponse<ProductDto> findAllSortMultiColumn(MultiSortPageRequest request) {
         List<AppSortOrder> orderList = request.getOrderList();
         List<Sort.Order> orders = new ArrayList<>();
         if (CollectionUtils.isNotEmpty(orderList)) {
@@ -117,7 +116,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public PageImpl<ProductDto> findAll(AppPageRequest request) {
+    public PageResponse<ProductDto> findAll(AppPageRequest request) {
         Sort.Direction direction = Sort.Direction.fromString(request.getSortDirection());
         List<Sort.Order> orders = request.getSortColumn().stream()
                 .map(property -> new Sort.Order(direction, property))
@@ -127,6 +126,7 @@ public class ProductServiceImpl implements ProductService {
                 request.getPageSize(),
                 Sort.by(orders));
     }
+
 
     @Override
     public CursorPageResponse<CursorProductDto> findAllCursorPagination(CursorPageRequest request) throws IllegalAccessException {

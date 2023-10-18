@@ -6,23 +6,28 @@ import com.example.productservice.dto.CursorProductDto;
 import com.example.productservice.dto.ProductDto;
 import com.example.productservice.dto.UpdateProductRequest;
 import com.example.productservice.service.ProductService;
+import com.example.productservice.utils.Constants;
 import com.example.springbootmicroservicesframework.dto.AppPageRequest;
 import com.example.springbootmicroservicesframework.dto.CursorPageRequest;
 import com.example.springbootmicroservicesframework.dto.CursorPageResponse;
 import com.example.springbootmicroservicesframework.dto.IdListResponse;
 import com.example.springbootmicroservicesframework.dto.MultiSortPageRequest;
+import com.example.springbootmicroservicesframework.dto.PageResponse;
 import com.example.springbootmicroservicesframework.exception.NotFoundException;
 import com.example.springbootmicroservicesframework.utils.Const;
+import com.example.springbootmicroservicesframework.validation.ValidEnumString;
+import com.example.springbootmicroservicesframework.validation.ValidString;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
-import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -31,8 +36,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Set;
 
 
 @RestController
@@ -76,20 +83,32 @@ public class ProductApi {
     }
 
     @GetMapping
-    public ResponseEntity<PageImpl<ProductDto>> findAll(@Valid AppPageRequest request) {
+    public ResponseEntity<PageResponse<ProductDto>> findAll(
+            @RequestParam @Min(value = Const.ONE) @Max(value = Const.DEFAULT_MAX_INTEGER) Integer pageNumber,
+            @RequestParam @Min(value = Const.DEFAULT_PAGE_SIZE) @Max(value = Const.MAXIMUM_PAGE_SIZE) Integer pageSize,
+            @RequestParam @ValidString(values = {
+                    Constants.SORT_COLUMN_ID,
+                    Constants.SORT_COLUMN_NAME,
+                    Constants.SORT_COLUMN_DESCRIPTION,
+                    Constants.SORT_COLUMN_PRICE,
+                    Constants.SORT_COLUMN_CATEGORY_ID,
+            })
+            @Size(min = Const.ONE, max = Const.MAXIMUM_SORT_COLUMN) Set<String> sortColumn,
+            @RequestParam @ValidEnumString(value = Sort.Direction.class, caseSensitive = false) String sortDirection) {
         log.info("findAll");
-        PageImpl<ProductDto> response = productService.findAll(request);
-        if (!response.hasContent()) {
+        var request = new AppPageRequest(pageNumber, pageSize, sortColumn, sortDirection);
+        var response = productService.findAll(request);
+        if (!response.getPageable().isHasContent()) {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.ok(response);
     }
 
     @PostMapping("/sort-multi-column")
-    public ResponseEntity<PageImpl<ProductDto>> findAllSortMultiColumn(@RequestBody @Valid MultiSortPageRequest request) {
+    public ResponseEntity<PageResponse<ProductDto>> findAllSortMultiColumn(@RequestBody @Valid MultiSortPageRequest request) {
         log.info("findAllSortMultiColumn");
-        PageImpl<ProductDto> response = productService.findAllSortMultiColumn(request);
-        if (!response.hasContent()) {
+        var response = productService.findAllSortMultiColumn(request);
+        if (!response.getPageable().isHasContent()) {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.ok(response);

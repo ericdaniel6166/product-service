@@ -14,6 +14,7 @@ app:
   kafka-group-id: notificationId
   context-path: api/product
   api-gateway-hostname: localhost
+  swagger-api-gateway-hostname: localhost
   api-gateway-server-port: 8181
 
 eureka:
@@ -57,7 +58,6 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
       ddl-auto: none
-
     show-sql: true
 
 management:
@@ -98,4 +98,4 @@ springdoc:
 
 swagger:
   server:
-    url: http://${app.api-gateway-hostname}:${app.api-gateway-server-port}/${app.context-path}
+    url: http://${app.swagger-api-gateway-hostname}:${app.api-gateway-server-port}/${app.context-path}

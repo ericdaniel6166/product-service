@@ -5,7 +5,6 @@ app:
   database-port: 5432
   database-name: product_service
   server-port: 8081
-  #  server-port: 0
   application-name: product-service
   kafka-hostname: localhost
   kafka-port: 9092
@@ -16,6 +15,10 @@ app:
   api-gateway-hostname: localhost
   swagger-api-gateway-hostname: localhost
   api-gateway-server-port: 8181
+  zipkin-hostname: localhost
+  zipkin-server-port: 9411
+  zipkin-context-path: api/v2/spans
+
 
 eureka:
   client:
@@ -77,6 +80,9 @@ management:
   endpoint:
     health:
       show-details: always
+  zipkin:
+    tracing:
+      endpoint: http://${app.zipkin-hostname}:${app.zipkin-server-port}/${app.zipkin-context-path}
 
 server:
   port: ${app.server-port}

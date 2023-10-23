@@ -5,7 +5,6 @@ app:
   database-port: 5432
   database-name: product_service
   server-port: 8081
-  #  server-port: 0
   application-name: product-service
   kafka-hostname: localhost
   kafka-port: 9092
@@ -14,7 +13,12 @@ app:
   kafka-group-id: notificationId
   context-path: api/product
   api-gateway-hostname: localhost
+  swagger-api-gateway-hostname: localhost
   api-gateway-server-port: 8181
+  zipkin-hostname: localhost
+  zipkin-server-port: 9411
+  zipkin-context-path: api/v2/spans
+
 
 eureka:
   client:
@@ -57,7 +61,6 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
       ddl-auto: none
-
     show-sql: true
 
 management:
@@ -77,6 +80,9 @@ management:
   endpoint:
     health:
       show-details: always
+  zipkin:
+    tracing:
+      endpoint: http://${app.zipkin-hostname}:${app.zipkin-server-port}/${app.zipkin-context-path}
 
 server:
   port: ${app.server-port}
@@ -98,4 +104,4 @@ springdoc:
 
 swagger:
   server:
-    url: http://${app.api-gateway-hostname}:${app.api-gateway-server-port}/${app.context-path}
+    url: http://${app.swagger-api-gateway-hostname}:${app.api-gateway-server-port}/${app.context-path}

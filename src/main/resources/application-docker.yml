@@ -2,6 +2,6 @@ app:
   eureka-hostname: discovery-server
   database-hostname: postgres-product
   database-port: 5432
-  kafka-hostname: broker
+  kafka-hostname: kafka
   kafka-port: 29092
   api-gateway-hostname: api-gateway

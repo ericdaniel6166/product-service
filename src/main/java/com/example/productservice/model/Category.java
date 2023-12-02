@@ -13,7 +13,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-@Table(name = "category")
+@Table(name = "CATEGORY")
 @Entity
 @Data
 @Builder

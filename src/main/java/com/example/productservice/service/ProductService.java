@@ -29,6 +29,6 @@ public interface ProductService {
 
     ProductDto findById(Long id) throws NotFoundException;
 
-    void deleteById(Long id) throws NotFoundException;
+    void deleteById(Long id);
 }
 

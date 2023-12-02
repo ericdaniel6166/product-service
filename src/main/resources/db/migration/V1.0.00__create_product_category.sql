@@ -1,26 +1,26 @@
 BEGIN;
 
-CREATE TABLE IF NOT EXISTS product
+CREATE TABLE IF NOT EXISTS PRODUCT
 (
-    id                 BIGSERIAL PRIMARY KEY,
-    name               VARCHAR(255)   NOT NULL,
-    description        TEXT,
-    price              NUMERIC(19, 4) NOT NULL,
-    category_id        BIGINT,
-    created_by         VARCHAR(255),
-    created_date       TIMESTAMP(6),
-    last_modified_by   VARCHAR(255),
-    last_modified_date TIMESTAMP(6)
+    ID                 BIGSERIAL PRIMARY KEY,
+    NAME               VARCHAR(255)   NOT NULL,
+    DESCRIPTION        TEXT,
+    PRICE              NUMERIC(19, 4) NOT NULL,
+    CATEGORY_ID        BIGINT,
+    CREATED_BY         VARCHAR(255),
+    CREATED_DATE       TIMESTAMP(6),
+    LAST_MODIFIED_BY   VARCHAR(255),
+    LAST_MODIFIED_DATE TIMESTAMP(6)
 );
 
-CREATE TABLE IF NOT EXISTS category
+CREATE TABLE IF NOT EXISTS CATEGORY
 (
-    id                 BIGSERIAL PRIMARY KEY,
-    name               VARCHAR(255) NOT NULL,
-    created_by         VARCHAR(255),
-    created_date       TIMESTAMP(6),
-    last_modified_by   VARCHAR(255),
-    last_modified_date TIMESTAMP(6)
+    ID                 BIGSERIAL PRIMARY KEY,
+    NAME               VARCHAR(255) NOT NULL,
+    CREATED_BY         VARCHAR(255),
+    CREATED_DATE       TIMESTAMP(6),
+    LAST_MODIFIED_BY   VARCHAR(255),
+    LAST_MODIFIED_DATE TIMESTAMP(6)
 );
 
 COMMIT;

@@ -52,8 +52,7 @@ public class ProductApi {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<ProductDto> deleteById(@PathVariable @NotNull @Min(value = 1)
-                                                 @Max(value = Const.DEFAULT_MAX_LONG) Long id)
-            throws NotFoundException {
+                                                 @Max(value = Const.DEFAULT_MAX_LONG) Long id) {
         productService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
@@ -84,9 +83,14 @@ public class ProductApi {
 
     @GetMapping
     public ResponseEntity<PageResponse<ProductDto>> findAll(
-            @RequestParam @Min(value = Const.ONE) @Max(value = Const.DEFAULT_MAX_INTEGER) Integer pageNumber,
-            @RequestParam @Min(value = Const.DEFAULT_PAGE_SIZE) @Max(value = Const.MAXIMUM_PAGE_SIZE) Integer pageSize,
-            @RequestParam @ValidString(values = {
+            @RequestParam(required = false, defaultValue = Const.DEFAULT_PAGE_NUMBER_STRING)
+            @Min(value = Const.ONE)
+            @Max(value = Const.DEFAULT_MAX_INTEGER) Integer pageNumber,
+            @RequestParam(required = false, defaultValue = Const.DEFAULT_PAGE_SIZE_STRING)
+            @Min(value = Const.DEFAULT_PAGE_SIZE)
+            @Max(value = Const.MAXIMUM_PAGE_SIZE) Integer pageSize,
+            @RequestParam(required = false, defaultValue = Const.DEFAULT_SORT_COLUMN)
+            @ValidString(values = {
                     Constants.SORT_COLUMN_ID,
                     Constants.SORT_COLUMN_NAME,
                     Constants.SORT_COLUMN_DESCRIPTION,
@@ -94,8 +98,10 @@ public class ProductApi {
                     Constants.SORT_COLUMN_CATEGORY_ID,
             })
             @Size(min = Const.ONE, max = Const.MAXIMUM_SORT_COLUMN) Set<String> sortColumn,
-            @RequestParam @ValidEnumString(value = Sort.Direction.class, caseSensitive = false) String sortDirection) {
+            @RequestParam(required = false, defaultValue = Const.DEFAULT_SORT_DIRECTION)
+            @ValidEnumString(value = Sort.Direction.class, caseSensitive = false) String sortDirection) {
         log.info("findAll");
+
         var request = new AppPageRequest(pageNumber, pageSize, sortColumn, sortDirection);
         var response = productService.findAll(request);
         if (!response.getPageable().isHasContent()) {

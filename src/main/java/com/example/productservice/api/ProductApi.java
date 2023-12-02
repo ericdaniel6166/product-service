@@ -84,7 +84,7 @@ public class ProductApi {
     @GetMapping
     public ResponseEntity<PageResponse<ProductDto>> findAll(
             @RequestParam(required = false, defaultValue = Const.DEFAULT_PAGE_NUMBER_STRING)
-            @Min(value = Const.ONE)
+            @Min(value = Const.DEFAULT_PAGE_NUMBER)
             @Max(value = Const.DEFAULT_MAX_INTEGER) Integer pageNumber,
             @RequestParam(required = false, defaultValue = Const.DEFAULT_PAGE_SIZE_STRING)
             @Min(value = Const.DEFAULT_PAGE_SIZE)
@@ -97,7 +97,7 @@ public class ProductApi {
                     Constants.SORT_COLUMN_PRICE,
                     Constants.SORT_COLUMN_CATEGORY_ID,
             })
-            @Size(min = Const.ONE, max = Const.MAXIMUM_SORT_COLUMN) Set<String> sortColumn,
+            @Size(min = Const.DEFAULT_PAGE_NUMBER, max = Const.MAXIMUM_SORT_COLUMN) Set<String> sortColumn,
             @RequestParam(required = false, defaultValue = Const.DEFAULT_SORT_DIRECTION)
             @ValidEnumString(value = Sort.Direction.class, caseSensitive = false) String sortDirection) {
         log.info("findAll");

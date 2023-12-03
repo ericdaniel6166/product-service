@@ -49,13 +49,8 @@ public class ProductServiceImpl implements ProductService {
 
     @Transactional
     @Override
-    public void deleteById(Long id) throws NotFoundException {
-        boolean isExisted = productRepository.existsById(id);
-        if (isExisted) {
-            productRepository.deleteById(id);
-        } else {
-            throw new NotFoundException(String.format("product id %s", id));
-        }
+    public void deleteById(Long id) {
+        productRepository.deleteById(id);
     }
 
     @Override

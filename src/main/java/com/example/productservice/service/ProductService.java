@@ -3,6 +3,7 @@ package com.example.productservice.service;
 import com.example.productservice.dto.CreateMultiProductRequest;
 import com.example.productservice.dto.CreateProductRequest;
 import com.example.productservice.dto.CursorProductDto;
+import com.example.productservice.dto.ProductDetailDto;
 import com.example.productservice.dto.ProductDto;
 import com.example.productservice.dto.UpdateProductRequest;
 import com.example.springbootmicroservicesframework.dto.AppPageRequest;
@@ -30,5 +31,11 @@ public interface ProductService {
     ProductDto findById(Long id) throws NotFoundException;
 
     void deleteById(Long id);
+
+    ProductDetailDto findByIdView(Long id) throws NotFoundException;
+
+    ProductDetailDto findByIdJpql(Long id) throws NotFoundException;
+
+    ProductDetailDto findByIdJdbc(Long id) throws NotFoundException;
 }
 

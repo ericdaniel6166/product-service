@@ -3,6 +3,7 @@ package com.example.productservice.api;
 import com.example.productservice.dto.CreateMultiProductRequest;
 import com.example.productservice.dto.CreateProductRequest;
 import com.example.productservice.dto.CursorProductDto;
+import com.example.productservice.dto.ProductDetailDto;
 import com.example.productservice.dto.ProductDto;
 import com.example.productservice.dto.UpdateProductRequest;
 import com.example.productservice.service.ProductService;
@@ -62,6 +63,24 @@ public class ProductApi {
                                                @Max(value = Const.DEFAULT_MAX_LONG) Long id)
             throws NotFoundException {
         return ResponseEntity.ok(productService.findById(id));
+    }
+
+    @GetMapping("/view/{id}")
+    public ResponseEntity<ProductDetailDto> findByIdView(@PathVariable @NotNull @Min(value = 1)
+                                               @Max(value = Const.DEFAULT_MAX_LONG) Long id) throws NotFoundException {
+        return ResponseEntity.ok(productService.findByIdView(id));
+    }
+
+    @GetMapping("/jpql/{id}")
+    public ResponseEntity<ProductDetailDto> findByIdJpql(@PathVariable @NotNull @Min(value = 1)
+                                               @Max(value = Const.DEFAULT_MAX_LONG) Long id) throws NotFoundException {
+        return ResponseEntity.ok(productService.findByIdJpql(id));
+    }
+
+    @GetMapping("/jdbc/{id}")
+    public ResponseEntity<ProductDetailDto> findByIdJdbc(@PathVariable @NotNull @Min(value = 1)
+                                               @Max(value = Const.DEFAULT_MAX_LONG) Long id) throws NotFoundException {
+        return ResponseEntity.ok(productService.findByIdJdbc(id));
     }
 
     @PutMapping

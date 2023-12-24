@@ -21,7 +21,7 @@ public class CreateProductRequest {
     String name;
 
     //    @Size(max = 10) //delete //for local test
-    @Size(max = Const.DEFAULT_SIZE_MAX_STRING)
+    @Size(max = Const.SIZE_MAX_STRING)
     String description;
 
     //    @Max(value = Const.DEFAULT_MAX_NUMBER)

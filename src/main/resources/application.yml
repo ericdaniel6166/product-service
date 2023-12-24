@@ -18,6 +18,8 @@ app:
   zipkin-hostname: localhost
   zipkin-server-port: 9411
   zipkin-context-path: api/v2/spans
+  swagger-info-title: Product Service
+  swagger-info-version: v1.0
 
 
 eureka:
@@ -105,3 +107,11 @@ springdoc:
 swagger:
   server:
     url: http://${app.swagger-api-gateway-hostname}:${app.api-gateway-server-port}/${app.context-path}
+  info:
+    title: ${app.swagger-info-title}
+    version: ${app.swagger-info-version}
+    description: Documentation ${app.swagger-info-title} ${app.swagger-info-version}
+  security-scheme:
+    name: bearerAuth
+    bearer-format: JWT
+    scheme: bearer

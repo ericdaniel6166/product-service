@@ -17,13 +17,13 @@ import java.math.BigDecimal;
 public class UpdateProductRequest {
 
     @NotNull
-    @Min(value = 1)
+    @Min(value = Const.INTEGER_ONE)
     Long id;
 
     @Size(max = Const.DEFAULT_SIZE_MAX_STRING)
     String name;
 
-    @Size(max = Const.DEFAULT_SIZE_MAX_STRING)
+    @Size(max = Const.SIZE_MAX_STRING)
     String description;
 
     @Digits(integer = Const.MAXIMUM_BIG_DECIMAL_INTEGER, fraction = Const.MAXIMUM_BIG_DECIMAL_FRACTION)

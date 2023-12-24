@@ -18,6 +18,8 @@ import java.util.Optional;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class ProductCustomRepositoryImpl implements ProductCustomRepository {
 
+    private static final String PARAM_NAME_ID = "id";
+
     NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     @Override
@@ -37,7 +39,7 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository {
                 WHERE T1.ID = :id
                 """;
         MapSqlParameterSource mapSql = new MapSqlParameterSource();
-        mapSql.addValue("id", id);
+        mapSql.addValue(PARAM_NAME_ID, id);
         try {
             return Optional.ofNullable(namedParameterJdbcTemplate.queryForObject(sql, mapSql, BeanPropertyRowMapper.newInstance(ProductDetailDto.class)));
         } catch (EmptyResultDataAccessException e) {

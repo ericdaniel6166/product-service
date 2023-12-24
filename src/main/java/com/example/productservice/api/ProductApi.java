@@ -29,6 +29,7 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -44,12 +45,13 @@ import java.util.Set;
 
 
 @RestController
-@RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE)
 @Slf4j
 @Validated
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class ProductApi {
-    final ProductService productService;
+
+    ProductService productService;
 
     @DeleteMapping("/{id}")
     public ResponseEntity<ProductDto> deleteById(@PathVariable @NotNull @Min(value = 1)
@@ -91,19 +93,19 @@ public class ProductApi {
 
     @PostMapping
     public ResponseEntity<IdListResponse> create(@RequestBody @Valid CreateProductRequest request) {
-        return ResponseEntity.ok(productService.create(request));
+        return new ResponseEntity<>(productService.create(request), HttpStatus.CREATED);
     }
 
 
     @PostMapping("/create-multi")
     public ResponseEntity<IdListResponse> createMulti(@RequestBody @Valid CreateMultiProductRequest request) {
-        return ResponseEntity.ok(productService.createMulti(request));
+        return new ResponseEntity<>(productService.createMulti(request), HttpStatus.CREATED);
     }
 
     @GetMapping
     public ResponseEntity<PageResponse<ProductDto>> findAll(
-            @RequestParam(required = false, defaultValue = Const.DEFAULT_PAGE_NUMBER_STRING)
-            @Min(value = Const.DEFAULT_PAGE_NUMBER)
+            @RequestParam(required = false, defaultValue = Const.STRING_ONE)
+            @Min(value = Const.INTEGER_ONE)
             @Max(value = Const.DEFAULT_MAX_INTEGER) Integer pageNumber,
             @RequestParam(required = false, defaultValue = Const.DEFAULT_PAGE_SIZE_STRING)
             @Min(value = Const.DEFAULT_PAGE_SIZE)
@@ -116,7 +118,7 @@ public class ProductApi {
                     Constants.SORT_COLUMN_PRICE,
                     Constants.SORT_COLUMN_CATEGORY_ID,
             })
-            @Size(min = Const.DEFAULT_PAGE_NUMBER, max = Const.MAXIMUM_SORT_COLUMN) Set<String> sortColumn,
+            @Size(min = Const.INTEGER_ONE, max = Const.MAXIMUM_SORT_COLUMN) Set<String> sortColumn,
             @RequestParam(required = false, defaultValue = Const.DEFAULT_SORT_DIRECTION)
             @ValidEnumString(value = Sort.Direction.class, caseSensitive = false) String sortDirection) {
         log.info("findAll");

@@ -20,6 +20,8 @@ app:
   zipkin-context-path: api/v2/spans
   swagger-info-title: Product Service
   swagger-info-version: v1.0
+  keycloak-host: localhost
+  keycloak-port: 8080
 
 
 eureka:
@@ -34,6 +36,11 @@ eureka:
 spring:
   application:
     name: ${app.application-name}
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://${app.keycloak-host}:${app.keycloak-port}/auth/realms/my_realm
   flyway:
     baseline-on-migrate: true
     baseline-version: 0.0

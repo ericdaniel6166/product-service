@@ -12,7 +12,7 @@ import com.example.springbootmicroservicesframework.dto.CursorPageResponse;
 import com.example.springbootmicroservicesframework.dto.IdListResponse;
 import com.example.springbootmicroservicesframework.dto.MultiSortPageRequest;
 import com.example.springbootmicroservicesframework.dto.PageResponse;
-import com.example.springbootmicroservicesframework.exception.NotFoundException;
+import com.example.springbootmicroservicesframework.exception.AppNotFoundException;
 
 public interface ProductService {
 
@@ -26,16 +26,16 @@ public interface ProductService {
 
     IdListResponse createMulti(CreateMultiProductRequest request);
 
-    IdListResponse update(UpdateProductRequest request) throws NotFoundException;
+    IdListResponse update(UpdateProductRequest request) throws AppNotFoundException;
 
-    ProductDto findById(Long id) throws NotFoundException;
+    ProductDto findById(Long id) throws AppNotFoundException;
 
     void deleteById(Long id);
 
-    ProductDetailDto findByIdView(Long id) throws NotFoundException;
+    ProductDetailDto findByIdView(Long id) throws AppNotFoundException;
 
-    ProductDetailDto findByIdJpql(Long id) throws NotFoundException;
+    ProductDetailDto findByIdJpql(Long id) throws AppNotFoundException;
 
-    ProductDetailDto findByIdJdbc(Long id) throws NotFoundException;
+    ProductDetailDto findByIdJdbc(Long id) throws AppNotFoundException;
 }
 

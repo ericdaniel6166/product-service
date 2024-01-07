@@ -14,7 +14,7 @@ import com.example.springbootmicroservicesframework.dto.CursorPageResponse;
 import com.example.springbootmicroservicesframework.dto.IdListResponse;
 import com.example.springbootmicroservicesframework.dto.MultiSortPageRequest;
 import com.example.springbootmicroservicesframework.dto.PageResponse;
-import com.example.springbootmicroservicesframework.exception.NotFoundException;
+import com.example.springbootmicroservicesframework.exception.AppNotFoundException;
 import com.example.springbootmicroservicesframework.utils.Const;
 import com.example.springbootmicroservicesframework.validation.ValidEnumString;
 import com.example.springbootmicroservicesframework.validation.ValidString;
@@ -69,34 +69,34 @@ public class ProductApi {
     @GetMapping("/{id}")
     public ResponseEntity<ProductDto> findById(@PathVariable @NotNull @Min(value = 1)
                                                @Max(value = Const.DEFAULT_MAX_LONG) Long id)
-            throws NotFoundException {
+            throws AppNotFoundException {
         return ResponseEntity.ok(productService.findById(id));
     }
 
     @Operation(security = @SecurityRequirement(name = "bearerAuth"))
     @GetMapping("/view/{id}")
     public ResponseEntity<ProductDetailDto> findByIdView(@PathVariable @NotNull @Min(value = 1)
-                                               @Max(value = Const.DEFAULT_MAX_LONG) Long id) throws NotFoundException {
+                                               @Max(value = Const.DEFAULT_MAX_LONG) Long id) throws AppNotFoundException {
         return ResponseEntity.ok(productService.findByIdView(id));
     }
 
     @Operation(security = @SecurityRequirement(name = "bearerAuth"))
     @GetMapping("/jpql/{id}")
     public ResponseEntity<ProductDetailDto> findByIdJpql(@PathVariable @NotNull @Min(value = 1)
-                                               @Max(value = Const.DEFAULT_MAX_LONG) Long id) throws NotFoundException {
+                                               @Max(value = Const.DEFAULT_MAX_LONG) Long id) throws AppNotFoundException {
         return ResponseEntity.ok(productService.findByIdJpql(id));
     }
 
     @Operation(security = @SecurityRequirement(name = "bearerAuth"))
     @GetMapping("/jdbc/{id}")
     public ResponseEntity<ProductDetailDto> findByIdJdbc(@PathVariable @NotNull @Min(value = 1)
-                                               @Max(value = Const.DEFAULT_MAX_LONG) Long id) throws NotFoundException {
+                                               @Max(value = Const.DEFAULT_MAX_LONG) Long id) throws AppNotFoundException {
         return ResponseEntity.ok(productService.findByIdJdbc(id));
     }
 
     @Operation(security = @SecurityRequirement(name = "bearerAuth"))
     @PutMapping
-    public ResponseEntity<IdListResponse> update(@RequestBody @Valid UpdateProductRequest request) throws NotFoundException {
+    public ResponseEntity<IdListResponse> update(@RequestBody @Valid UpdateProductRequest request) throws AppNotFoundException {
         return ResponseEntity.ok(productService.update(request));
     }
 

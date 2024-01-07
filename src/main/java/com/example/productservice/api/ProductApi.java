@@ -34,6 +34,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -56,6 +57,19 @@ public class ProductApi {
 
     ProductService productService;
     HttpServletRequest httpServletRequest;
+
+    @Operation(security = @SecurityRequirement(name = "bearerAuth"))
+    @GetMapping("/test")
+    public ResponseEntity<Object> test() {
+        return ResponseEntity.ok("test");
+    }
+
+    @Operation(security = @SecurityRequirement(name = "bearerAuth"))
+    @GetMapping("/test2")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Object> test2() {
+        return ResponseEntity.ok("test2");
+    }
 
     @Operation(security = @SecurityRequirement(name = "bearerAuth"))
     @DeleteMapping("/{id}")

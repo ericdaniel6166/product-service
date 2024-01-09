@@ -14,10 +14,15 @@ import com.example.springbootmicroservicesframework.dto.CursorPageResponse;
 import com.example.springbootmicroservicesframework.dto.IdListResponse;
 import com.example.springbootmicroservicesframework.dto.MultiSortPageRequest;
 import com.example.springbootmicroservicesframework.dto.PageResponse;
-import com.example.springbootmicroservicesframework.exception.NotFoundException;
+import com.example.springbootmicroservicesframework.dto.TestDto;
+import com.example.springbootmicroservicesframework.exception.AppNotFoundException;
+import com.example.springbootmicroservicesframework.utils.AppSecurityUtils;
 import com.example.springbootmicroservicesframework.utils.Const;
 import com.example.springbootmicroservicesframework.validation.ValidEnumString;
 import com.example.springbootmicroservicesframework.validation.ValidString;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -31,6 +36,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -52,7 +58,42 @@ import java.util.Set;
 public class ProductApi {
 
     ProductService productService;
+    HttpServletRequest httpServletRequest;
 
+    @Operation(security = @SecurityRequirement(name = "bearerAuth"))
+    @GetMapping("/test")
+    public ResponseEntity<Object> test() {
+        return ResponseEntity.ok(TestDto.builder()
+                .username(AppSecurityUtils.getUsername())
+                .email(AppSecurityUtils.getEmail())
+                .emailVerified(AppSecurityUtils.getEmailVerified())
+                .scope(AppSecurityUtils.getScope())
+                .fullName(AppSecurityUtils.getFullName())
+                .firstName(AppSecurityUtils.getFirstName())
+                .lastName(AppSecurityUtils.getLastName())
+                .issuer(AppSecurityUtils.getIssuer())
+                .jwtId(AppSecurityUtils.getJwtId())
+                .remoteAddress(AppSecurityUtils.getRemoteAddress())
+                .sessionId(AppSecurityUtils.getSessionId())
+                .subject(AppSecurityUtils.getSubject())
+                .tokenValue(AppSecurityUtils.getTokenValue())
+                .audience(AppSecurityUtils.getAudience())
+                .expiresAt(AppSecurityUtils.getExpiresAt())
+                .issuedAt(AppSecurityUtils.getIssuedAt())
+                .notBefore(AppSecurityUtils.getNotBefore())
+                .authorities(AppSecurityUtils.getAuthorities())
+                .claims(AppSecurityUtils.getClaims())
+                .build());
+    }
+
+    @Operation(security = @SecurityRequirement(name = "bearerAuth"))
+    @GetMapping("/test2")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Object> test2() {
+        return ResponseEntity.ok("test2");
+    }
+
+    @Operation(security = @SecurityRequirement(name = "bearerAuth"))
     @DeleteMapping("/{id}")
     public ResponseEntity<ProductDto> deleteById(@PathVariable @NotNull @Min(value = 1)
                                                  @Max(value = Const.DEFAULT_MAX_LONG) Long id) {
@@ -60,48 +101,55 @@ public class ProductApi {
         return ResponseEntity.noContent().build();
     }
 
+    @Operation(security = @SecurityRequirement(name = "bearerAuth"))
     @GetMapping("/{id}")
     public ResponseEntity<ProductDto> findById(@PathVariable @NotNull @Min(value = 1)
                                                @Max(value = Const.DEFAULT_MAX_LONG) Long id)
-            throws NotFoundException {
+            throws AppNotFoundException {
         return ResponseEntity.ok(productService.findById(id));
     }
 
+    @Operation(security = @SecurityRequirement(name = "bearerAuth"))
     @GetMapping("/view/{id}")
     public ResponseEntity<ProductDetailDto> findByIdView(@PathVariable @NotNull @Min(value = 1)
-                                               @Max(value = Const.DEFAULT_MAX_LONG) Long id) throws NotFoundException {
+                                               @Max(value = Const.DEFAULT_MAX_LONG) Long id) throws AppNotFoundException {
         return ResponseEntity.ok(productService.findByIdView(id));
     }
 
+    @Operation(security = @SecurityRequirement(name = "bearerAuth"))
     @GetMapping("/jpql/{id}")
     public ResponseEntity<ProductDetailDto> findByIdJpql(@PathVariable @NotNull @Min(value = 1)
-                                               @Max(value = Const.DEFAULT_MAX_LONG) Long id) throws NotFoundException {
+                                               @Max(value = Const.DEFAULT_MAX_LONG) Long id) throws AppNotFoundException {
         return ResponseEntity.ok(productService.findByIdJpql(id));
     }
 
+    @Operation(security = @SecurityRequirement(name = "bearerAuth"))
     @GetMapping("/jdbc/{id}")
     public ResponseEntity<ProductDetailDto> findByIdJdbc(@PathVariable @NotNull @Min(value = 1)
-                                               @Max(value = Const.DEFAULT_MAX_LONG) Long id) throws NotFoundException {
+                                               @Max(value = Const.DEFAULT_MAX_LONG) Long id) throws AppNotFoundException {
         return ResponseEntity.ok(productService.findByIdJdbc(id));
     }
 
+    @Operation(security = @SecurityRequirement(name = "bearerAuth"))
     @PutMapping
-    public ResponseEntity<IdListResponse> update(@RequestBody @Valid UpdateProductRequest request) throws NotFoundException {
+    public ResponseEntity<IdListResponse> update(@RequestBody @Valid UpdateProductRequest request) throws AppNotFoundException {
         return ResponseEntity.ok(productService.update(request));
     }
 
 
+    @Operation(security = @SecurityRequirement(name = "bearerAuth"))
     @PostMapping
     public ResponseEntity<IdListResponse> create(@RequestBody @Valid CreateProductRequest request) {
         return new ResponseEntity<>(productService.create(request), HttpStatus.CREATED);
     }
 
-
+    @Operation(security = @SecurityRequirement(name = "bearerAuth"))
     @PostMapping("/create-multi")
     public ResponseEntity<IdListResponse> createMulti(@RequestBody @Valid CreateMultiProductRequest request) {
         return new ResponseEntity<>(productService.createMulti(request), HttpStatus.CREATED);
     }
 
+    @Operation(security = @SecurityRequirement(name = "bearerAuth"))
     @GetMapping
     public ResponseEntity<PageResponse<ProductDto>> findAll(
             @RequestParam(required = false, defaultValue = Const.STRING_ONE)
@@ -131,6 +179,7 @@ public class ProductApi {
         return ResponseEntity.ok(response);
     }
 
+    @Operation(security = @SecurityRequirement(name = "bearerAuth"))
     @PostMapping("/sort-multi-column")
     public ResponseEntity<PageResponse<ProductDto>> findAllSortMultiColumn(@RequestBody @Valid MultiSortPageRequest request) {
         log.info("findAllSortMultiColumn");
@@ -141,6 +190,7 @@ public class ProductApi {
         return ResponseEntity.ok(response);
     }
 
+    @Operation(security = @SecurityRequirement(name = "bearerAuth"))
     @GetMapping("/cursor-pagination")
     public ResponseEntity<CursorPageResponse<CursorProductDto>> findAllCursorPagination(@Valid CursorPageRequest request)
             throws IllegalAccessException {

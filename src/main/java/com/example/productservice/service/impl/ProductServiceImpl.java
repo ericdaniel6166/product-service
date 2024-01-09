@@ -20,7 +20,7 @@ import com.example.springbootmicroservicesframework.dto.CursorPageResponse;
 import com.example.springbootmicroservicesframework.dto.IdListResponse;
 import com.example.springbootmicroservicesframework.dto.MultiSortPageRequest;
 import com.example.springbootmicroservicesframework.dto.PageResponse;
-import com.example.springbootmicroservicesframework.exception.NotFoundException;
+import com.example.springbootmicroservicesframework.exception.AppNotFoundException;
 import com.example.springbootmicroservicesframework.utils.AppReflectionUtils;
 import com.example.springbootmicroservicesframework.utils.PageUtils;
 import lombok.AccessLevel;
@@ -53,31 +53,31 @@ public class ProductServiceImpl implements ProductService {
     ProductMapper productMapper;
 
     @Override
-    public ProductDetailDto findByIdJdbc(Long id) throws NotFoundException {
+    public ProductDetailDto findByIdJdbc(Long id) throws AppNotFoundException {
         return getByIdJdbc(id);
     }
 
-    private ProductDetailDto getByIdJdbc(Long id) throws NotFoundException {
-        return productRepository.findByIdJdbc(id).orElseThrow(() -> new NotFoundException(String.format(PRODUCT_ID_NOT_FOUND_TEMPLATE, id)));
+    private ProductDetailDto getByIdJdbc(Long id) throws AppNotFoundException {
+        return productRepository.findByIdJdbc(id).orElseThrow(() -> new AppNotFoundException(String.format(PRODUCT_ID_NOT_FOUND_TEMPLATE, id)));
     }
 
     @Override
-    public ProductDetailDto findByIdJpql(Long id) throws NotFoundException {
+    public ProductDetailDto findByIdJpql(Long id) throws AppNotFoundException {
         return getByIdJpql(id);
     }
 
-    private ProductDetailDto getByIdJpql(Long id) throws NotFoundException {
-        return productRepository.findByIdJpql(id).orElseThrow(() -> new NotFoundException(String.format(PRODUCT_ID_NOT_FOUND_TEMPLATE, id)));
+    private ProductDetailDto getByIdJpql(Long id) throws AppNotFoundException {
+        return productRepository.findByIdJpql(id).orElseThrow(() -> new AppNotFoundException(String.format(PRODUCT_ID_NOT_FOUND_TEMPLATE, id)));
     }
 
     @Override
-    public ProductDetailDto findByIdView(Long id) throws NotFoundException {
+    public ProductDetailDto findByIdView(Long id) throws AppNotFoundException {
         var productView = getByIdView(id);
         return modelMapper.map(productView, ProductDetailDto.class);
     }
 
-    private ProductView getByIdView(Long id) throws NotFoundException {
-        return productViewRepository.findById(id).orElseThrow(() -> new NotFoundException(String.format(PRODUCT_ID_NOT_FOUND_TEMPLATE, id)));
+    private ProductView getByIdView(Long id) throws AppNotFoundException {
+        return productViewRepository.findById(id).orElseThrow(() -> new AppNotFoundException(String.format(PRODUCT_ID_NOT_FOUND_TEMPLATE, id)));
     }
 
     @Transactional
@@ -87,18 +87,18 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductDto findById(Long id) throws NotFoundException {
+    public ProductDto findById(Long id) throws AppNotFoundException {
         var product = getById(id);
         return modelMapper.map(product, ProductDto.class);
     }
 
-    private Product getById(Long id) throws NotFoundException {
-        return productRepository.findById(id).orElseThrow(() -> new NotFoundException(String.format(PRODUCT_ID_NOT_FOUND_TEMPLATE, id)));
+    private Product getById(Long id) throws AppNotFoundException {
+        return productRepository.findById(id).orElseThrow(() -> new AppNotFoundException(String.format(PRODUCT_ID_NOT_FOUND_TEMPLATE, id)));
     }
 
     @Transactional
     @Override
-    public IdListResponse update(UpdateProductRequest request) throws NotFoundException {
+    public IdListResponse update(UpdateProductRequest request) throws AppNotFoundException {
         var product = getById(request.getId());
         modelMapper.map(request, product);
         productRepository.saveAndFlush(product);

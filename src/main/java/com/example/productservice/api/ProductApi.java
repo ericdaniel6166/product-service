@@ -14,7 +14,9 @@ import com.example.springbootmicroservicesframework.dto.CursorPageResponse;
 import com.example.springbootmicroservicesframework.dto.IdListResponse;
 import com.example.springbootmicroservicesframework.dto.MultiSortPageRequest;
 import com.example.springbootmicroservicesframework.dto.PageResponse;
+import com.example.springbootmicroservicesframework.dto.TestDto;
 import com.example.springbootmicroservicesframework.exception.AppNotFoundException;
+import com.example.springbootmicroservicesframework.utils.AppSecurityUtils;
 import com.example.springbootmicroservicesframework.utils.Const;
 import com.example.springbootmicroservicesframework.validation.ValidEnumString;
 import com.example.springbootmicroservicesframework.validation.ValidString;
@@ -61,7 +63,27 @@ public class ProductApi {
     @Operation(security = @SecurityRequirement(name = "bearerAuth"))
     @GetMapping("/test")
     public ResponseEntity<Object> test() {
-        return ResponseEntity.ok("test");
+        return ResponseEntity.ok(TestDto.builder()
+                .username(AppSecurityUtils.getUsername())
+                .email(AppSecurityUtils.getEmail())
+                .emailVerified(AppSecurityUtils.getEmailVerified())
+                .scope(AppSecurityUtils.getScope())
+                .fullName(AppSecurityUtils.getFullName())
+                .firstName(AppSecurityUtils.getFirstName())
+                .lastName(AppSecurityUtils.getLastName())
+                .issuer(AppSecurityUtils.getIssuer())
+                .jwtId(AppSecurityUtils.getJwtId())
+                .remoteAddress(AppSecurityUtils.getRemoteAddress())
+                .sessionId(AppSecurityUtils.getSessionId())
+                .subject(AppSecurityUtils.getSubject())
+                .tokenValue(AppSecurityUtils.getTokenValue())
+                .audience(AppSecurityUtils.getAudience())
+                .expiresAt(AppSecurityUtils.getExpiresAt())
+                .issuedAt(AppSecurityUtils.getIssuedAt())
+                .notBefore(AppSecurityUtils.getNotBefore())
+                .authorities(AppSecurityUtils.getAuthorities())
+                .claims(AppSecurityUtils.getClaims())
+                .build());
     }
 
     @Operation(security = @SecurityRequirement(name = "bearerAuth"))

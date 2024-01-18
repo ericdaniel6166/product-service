@@ -11,6 +11,7 @@ import com.example.productservice.model.Product;
 import com.example.productservice.model.view.ProductView;
 import com.example.productservice.repository.ProductRepository;
 import com.example.productservice.repository.view.ProductViewRepository;
+import com.example.productservice.service.ProductCacheEvictService;
 import com.example.productservice.service.ProductService;
 import com.example.springbootmicroservicesframework.config.specification.PageSpecification;
 import com.example.springbootmicroservicesframework.dto.AppPageRequest;
@@ -29,6 +30,7 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.modelmapper.ModelMapper;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -51,6 +53,7 @@ public class ProductServiceImpl implements ProductService {
     ProductViewRepository productViewRepository;
     ModelMapper modelMapper;
     ProductMapper productMapper;
+    ProductCacheEvictService productCacheEvictService;
 
     @Override
     public ProductDetailDto findByIdJdbc(Long id) throws AppNotFoundException {
@@ -84,8 +87,10 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void deleteById(Long id) {
         productRepository.deleteById(id);
+        productCacheEvictService.evictCacheProductFindById(id);
     }
 
+    @Cacheable(cacheNames = {"product.findById"}, key = "#id")
     @Override
     public ProductDto findById(Long id) throws AppNotFoundException {
         var product = getById(id);
@@ -102,14 +107,14 @@ public class ProductServiceImpl implements ProductService {
         var product = getById(request.getId());
         modelMapper.map(request, product);
         productRepository.saveAndFlush(product);
+        productCacheEvictService.evictCacheProductFindById(request.getId());
         return new IdListResponse(Collections.singletonList(product.getId()));
     }
 
     @Transactional
     @Override
     public IdListResponse create(CreateProductRequest request) {
-        Product product = modelMapper.map(request, Product.class);
-
+        var product = modelMapper.map(request, Product.class);
         productRepository.saveAndFlush(product);
         return new IdListResponse(Collections.singletonList(product.getId()));
     }
@@ -121,7 +126,11 @@ public class ProductServiceImpl implements ProductService {
                 .map(createProductRequest -> modelMapper.map(createProductRequest, Product.class)).toList();
 
         productRepository.saveAllAndFlush(productList);
-        List<Long> idList = productList.stream().map(Product::getId).toList();
+        List<Long> idList = productList.stream().map(product -> {
+            Long id = product.getId();
+            productCacheEvictService.evictCacheProductFindById(id);
+            return id;
+        }).toList();
         return new IdListResponse(idList);
     }
 

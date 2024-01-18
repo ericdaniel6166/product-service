@@ -6,3 +6,4 @@ app:
   kafka-port: 29092
   api-gateway-hostname: api-gateway
   keycloak-host: keycloak
+  redis-host: redis

@@ -24,7 +24,6 @@ public class CreateProductRequest {
     @Size(max = Const.SIZE_MAX_STRING)
     String description;
 
-    //    @Max(value = Const.DEFAULT_MAX_NUMBER)
     @Digits(integer = Const.MAXIMUM_BIG_DECIMAL_INTEGER,
             fraction = Const.MAXIMUM_BIG_DECIMAL_FRACTION)
     @Positive

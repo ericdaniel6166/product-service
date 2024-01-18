@@ -9,6 +9,8 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -18,7 +20,11 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ProductDetailDto extends BaseEntity<String> {
+public class ProductDetailDto extends BaseEntity<String> implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
+
     Long id;
     String name;
     String description;

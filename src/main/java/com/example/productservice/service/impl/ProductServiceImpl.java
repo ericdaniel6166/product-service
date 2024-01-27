@@ -13,6 +13,7 @@ import com.example.productservice.repository.ProductRepository;
 import com.example.productservice.repository.view.ProductViewRepository;
 import com.example.productservice.service.ProductCacheEvictService;
 import com.example.productservice.service.ProductService;
+import com.example.productservice.utils.Constants;
 import com.example.springbootmicroservicesframework.config.specification.PageSpecification;
 import com.example.springbootmicroservicesframework.dto.AppPageRequest;
 import com.example.springbootmicroservicesframework.dto.AppSortOrder;
@@ -47,7 +48,7 @@ import java.util.stream.Collectors;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class ProductServiceImpl implements ProductService {
 
-    private static final String PRODUCT_ID_NOT_FOUND_TEMPLATE = "product id %s";
+    private static final String PRODUCT_ID_TEMPLATE = "product id %s";
 
     ProductRepository productRepository;
     ProductViewRepository productViewRepository;
@@ -61,7 +62,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     private ProductDetailDto getByIdJdbc(Long id) throws AppNotFoundException {
-        return productRepository.findByIdJdbc(id).orElseThrow(() -> new AppNotFoundException(String.format(PRODUCT_ID_NOT_FOUND_TEMPLATE, id)));
+        return productRepository.findByIdJdbc(id).orElseThrow(() -> new AppNotFoundException(String.format(PRODUCT_ID_TEMPLATE, id)));
     }
 
     @Override
@@ -70,7 +71,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     private ProductDetailDto getByIdJpql(Long id) throws AppNotFoundException {
-        return productRepository.findByIdJpql(id).orElseThrow(() -> new AppNotFoundException(String.format(PRODUCT_ID_NOT_FOUND_TEMPLATE, id)));
+        return productRepository.findByIdJpql(id).orElseThrow(() -> new AppNotFoundException(String.format(PRODUCT_ID_TEMPLATE, id)));
     }
 
     @Override
@@ -80,7 +81,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     private ProductView getByIdView(Long id) throws AppNotFoundException {
-        return productViewRepository.findById(id).orElseThrow(() -> new AppNotFoundException(String.format(PRODUCT_ID_NOT_FOUND_TEMPLATE, id)));
+        return productViewRepository.findById(id).orElseThrow(() -> new AppNotFoundException(String.format(PRODUCT_ID_TEMPLATE, id)));
     }
 
     @Transactional
@@ -90,7 +91,7 @@ public class ProductServiceImpl implements ProductService {
         productCacheEvictService.evictCacheProductFindById(id);
     }
 
-    @Cacheable(cacheNames = {"product.findById"}, key = "#id")
+    @Cacheable(cacheNames = {Constants.CACHE_NAME_PRODUCT_FIND_BY_ID}, key = "#id")
     @Override
     public ProductDto findById(Long id) throws AppNotFoundException {
         var product = getById(id);
@@ -98,7 +99,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     private Product getById(Long id) throws AppNotFoundException {
-        return productRepository.findById(id).orElseThrow(() -> new AppNotFoundException(String.format(PRODUCT_ID_NOT_FOUND_TEMPLATE, id)));
+        return productRepository.findById(id).orElseThrow(() -> new AppNotFoundException(String.format(PRODUCT_ID_TEMPLATE, id)));
     }
 
     @Transactional
@@ -126,7 +127,7 @@ public class ProductServiceImpl implements ProductService {
                 .map(createProductRequest -> modelMapper.map(createProductRequest, Product.class)).toList();
 
         productRepository.saveAllAndFlush(productList);
-        List<Long> idList = productList.stream().map(product -> {
+        var idList = productList.stream().map(product -> {
             Long id = product.getId();
             productCacheEvictService.evictCacheProductFindById(id);
             return id;

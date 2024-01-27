@@ -19,7 +19,7 @@ import com.example.springbootmicroservicesframework.exception.AppNotFoundExcepti
 import com.example.springbootmicroservicesframework.utils.AppSecurityUtils;
 import com.example.springbootmicroservicesframework.utils.Const;
 import com.example.springbootmicroservicesframework.validation.ValidEnumString;
-import com.example.springbootmicroservicesframework.validation.ValidString;
+import com.example.springbootmicroservicesframework.validation.ValidCollectionString;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.servlet.http.HttpServletRequest;
@@ -159,7 +159,7 @@ public class ProductApi {
             @Min(value = Const.DEFAULT_PAGE_SIZE)
             @Max(value = Const.MAXIMUM_PAGE_SIZE) Integer pageSize,
             @RequestParam(required = false, defaultValue = Const.DEFAULT_SORT_COLUMN)
-            @ValidString(values = {
+            @ValidCollectionString(values = {
                     Constants.SORT_COLUMN_ID,
                     Constants.SORT_COLUMN_NAME,
                     Constants.SORT_COLUMN_DESCRIPTION,
